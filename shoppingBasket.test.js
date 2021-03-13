@@ -60,13 +60,62 @@ describe('part 2', () => {
         expect(shoppingBasket(['pies'], bestBy)).toEqual(result)
         expect(shoppingBasket(['pies', 'chips'], bestBy)).toEqual(result2)
     });
-    // it('should apply a 50% discount when current date is same as best by date', () => {
-    //     let bestBy = getCurrentDate()
-    //     let result = {
-    //         pies : 1,
-    //         total : '£1.60'
-    //     }
-    //     expect(shoppingBasket(['pies'], bestBy)).toEqual(result)
+    it('should apply a 50% discount when current date is same as best by date', () => {
+        let bestBy = getCurrentDate()
+        let result = {
+            pies : 1,
+            total : '£1.60'
+        }
+        let result2 = {
+            pies : 2,
+            total : '£3.20'
+        }
+        expect(shoppingBasket(['pies'], bestBy)).toEqual(result)
+        expect(shoppingBasket(['pies',"pies"], bestBy)).toEqual(result2)
+    });
+});
 
-    // });
+describe('part 3', () => {
+    it('should apply a meal deal discount when chips and pies are bought together', () => {
+        let bestBy = new Date('01/01/2025')
+        let result = {
+            pies : 1,
+            chips : 1,
+            total : '£4.00'
+        }
+        expect(shoppingBasket(['pies', 'chips'], bestBy)).toEqual(result)
+    });
+    it('should apply meal discount to multiple meal deals', () => {
+        let bestBy = new Date('01/01/2025')
+        let result = {
+            pies : 3,
+            chips : 3,
+            total : '£12.00'
+        }
+        expect(shoppingBasket(['pies', 'chips','pies','pies','chips','chips'], bestBy)).toEqual(result)
+    });
+    it('should not apply discount to any items not in the meal deal', () => {
+        let bestBy = new Date('01/01/2025')
+        let result = {
+            pies : 2,
+            chips : 3,
+            total : '£9.80'
+        }
+        expect(shoppingBasket(['pies', 'chips', 'pies', 'chips', 'chips'], bestBy)).toEqual(result)
+    });
+    it('should not allow other deals to be used with the meal deal and should apply the best deal', () => {
+        let bestBy = getCurrentDate()
+        let result = {
+            pies : 1,
+            chips : 1,
+            total : '£3.40'
+        }
+
+        let result2 = {
+            pies : 3,
+            chips : 2,
+            total : '£8.40'
+        }
+        expect(shoppingBasket(['pies', 'chips'], bestBy)).toEqual(result)
+    });
 });

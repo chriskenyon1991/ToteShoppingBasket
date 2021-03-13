@@ -12,7 +12,6 @@ function getCurrentDate() {
     if(dd<10) {
         dd='0'+dd;
     } 
-
     if(mm<10) {
         mm='0'+mm;
     }
@@ -20,42 +19,55 @@ function getCurrentDate() {
     return today
 }
 
+function getDiscount(chips, pies) {
+    let discount = 1
+    if (chips < pies){
+        discount *= chips
+    }else{
+        discount *= pies
+    }
+
+    return discount
+}
+
 function shoppingBasket(items, bestByDate){
 
-    let ourItems = {
-        chips : {
-            price : 1.80
-        },
-        pie : {
-            price : 3.20,
-            bestBy : bestByDate
-        }
-        
-    }
+    let today = getCurrentDate().getTime()
     let chipsQuantity = 0
     let piesQuantity = 0
     let total = 0
     let basket = {}
 
     for(i = 0; i < items.length; i++){
-     
         if (items[i] === "chips"){
             chipsQuantity++
             basket["chips"] = chipsQuantity
             total += 1.80
         }else{
+            let bestByMilliseconds = bestByDate.getTime()
             if (getCurrentDate() > bestByDate){
                basket['pies'] = 'out of date'
-            }else if(getCurrentDate() === bestByDate){
-         console.log('success')
+            }else if(today === bestByMilliseconds){
+                piesQuantity++
+                basket["pies"] = piesQuantity
+                total += 1.60
             }else{
                 piesQuantity++
                 basket["pies"] = piesQuantity
                 total += 3.20
             }
         }
-
     }
+  
+    if (piesQuantity > 0 && chipsQuantity > 0){
+
+        let bestByMilliseconds = bestByDate.getTime()
+
+        if (today != bestByMilliseconds){
+            total -= getDiscount(chipsQuantity, piesQuantity)
+        }
+    }
+    
     basket['total'] = numToPrice(total)
     return basket
 }
